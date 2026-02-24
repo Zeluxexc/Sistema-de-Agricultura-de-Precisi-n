@@ -1,4 +1,5 @@
 # Sistema-de-Agricultura-de-Precision
+hecho por Juan Ascanio Marlon Hernández 
 
 Descripción del Proyecto
 Sistema tecnológico orientado al sector agrícola que integra IoT, automatización, análisis de datos y monitoreo centralizado para optimizar la producción agrícola.
