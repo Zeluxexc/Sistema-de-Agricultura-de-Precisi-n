@@ -19,6 +19,7 @@ Porque el sistema:
   - Necesita estabilidad
   - Tiene monitoreo y logs centralizados
 Enum evita problemas futuros.
+
 Ejemplo de aplicacion en el proyecto
 ```
 public enum SistemaRiego {
