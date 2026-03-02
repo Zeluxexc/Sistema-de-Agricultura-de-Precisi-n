@@ -9,30 +9,13 @@ El sistema permite:
 -Automatización del sistema de riego basado en condiciones climáticas
 -Gestión de inventario y cadena de frío
 -Predicción de cosechas usando análisis de datos históricos
--Monitoreo y observabilidad del sistema en tiempo real}
+-Monitoreo y observabilidad del sistema en tiempo real
 
-Sistema-de-Agricultura-de-Precision/
-│
-├── README.md
-├── docs/
-│   ├── arquitectura.png
-│   ├── ADR-001.md
-│
-├── backend/
-│   ├── app.py
-│   ├── requirements.txt
-│   ├── services/
-│   ├── models/
-│
-├── ml/
-│   ├── entrenamiento.py
-│   ├── modelo.pkl
-│
-├── iot/
-│   ├── simulador_sensores.py
-│
-├── tests/
-│   ├── test_riego.py
-│
-├── docker-compose.yml
-└── .github/workflows/ci.yml
+Basandonos en lo visto en clase lo mas recomendado para nuestro proyecto seria utilizar Enum Singleton
+
+Porque el sistema:
+  -Maneja concurrencia (API + IoT)
+  -Puede escalar
+  -Necesita estabilidad
+  -Tiene monitoreo y logs centralizados
+Enum evita problemas futuros.
