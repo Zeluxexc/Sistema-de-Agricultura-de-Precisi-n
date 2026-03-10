@@ -293,3 +293,187 @@ POST http://localhost:8080/sensores/25
 
 Si humedad < 30 → activa riego
 Si humedad > 30 → desactiva
+
+## Semana 2
+
+# Factory Method
+
+# Interfaz Sensor
+
+```
+public interface Sensor {
+    void medir();
+}
+```
+
+Define el comportamiento común de todos los sensores.
+
+# Implementaciones de sensores
+
+Ejemplo:
+
+```
+public class SensorTemperatura implements Sensor {
+
+    @Override
+    public void medir() {
+        System.out.println("Midiendo temperatura del cultivo");
+    }
+}
+```
+
+```
+public class SensorHumedad implements Sensor {
+
+    @Override
+    public void medir() {
+        System.out.println("Midiendo humedad del suelo");
+    }
+}
+```
+
+# Clase Factory Method
+
+```
+public class SensorFactory {
+
+    public static Sensor crearSensor(String tipo) {
+
+        if(tipo.equalsIgnoreCase("temperatura")) {
+            return new SensorTemperatura();
+        }
+
+        if(tipo.equalsIgnoreCase("humedad")) {
+            return new SensorHumedad();
+        }
+
+        return null;
+    }
+}
+```
+
+USO
+
+```
+Sensor sensor = SensorFactory.crearSensor("temperatura");
+sensor.medir();
+```
+
+Implementación de Patrones de Diseño
+
+Factory Method
+
+Se implementó el patrón Factory Method para la creación de sensores IoT utilizados en el monitoreo agrícola.
+Este patrón permite crear diferentes tipos de sensores (temperatura, humedad, suelo) sin acoplar el sistema a clases concretas.
+
+Beneficios:
+
+- Facilita agregar nuevos sensores
+- Reduce el acoplamiento del sistema
+- Mejora la escalabilidad de la plataforma IoT agrícola
+
+## Semana 3
+
+# Abstract Factory
+
+# Interfaces de dispositivos
+
+Sensor
+
+```
+public interface Sensor {
+    void medir();
+}
+```
+
+Drone
+
+```
+public interface Drone {
+    void monitorear();
+}
+```
+
+SistemaRiego
+
+```
+public interface SistemaRiego {
+    void regar();
+}
+```
+
+# Clase Abstract Factory
+
+```
+public interface DispositivoFactory {
+
+    Sensor crearSensor();
+
+    Drone crearDrone();
+
+    SistemaRiego crearSistemaRiego();
+}
+```
+
+Esta es la fábrica abstracta.
+
+Define qué dispositivos se deben crear.
+
+# Fábrica para Campo Abierto
+
+```
+public class CampoFactory implements DispositivoFactory {
+
+    @Override
+    public Sensor crearSensor() {
+        return new SensorCampo();
+    }
+
+    @Override
+    public Drone crearDrone() {
+        return new DroneCampo();
+    }
+
+    @Override
+    public SistemaRiego crearSistemaRiego() {
+        return new RiegoCampo();
+    }
+}
+```
+
+# Fábrica para Invernadero
+
+```
+public class InvernaderoFactory implements DispositivoFactory {
+
+    @Override
+    public Sensor crearSensor() {
+        return new SensorInvernadero();
+    }
+
+    @Override
+    public Drone crearDrone() {
+        return new DroneInvernadero();
+    }
+
+    @Override
+    public SistemaRiego crearSistemaRiego() {
+        return new RiegoInvernadero();
+    }
+}
+```
+
+Se implementó el patrón Abstract Factory para la creación de familias completas de dispositivos agrícolas dependiendo del entorno de cultivo.
+
+El sistema puede generar automáticamente conjuntos de dispositivos para diferentes entornos como:
+
+- Campo abierto
+- Invernadero
+
+Cada entorno incluye:
+
+- Sensores
+- Drones de monitoreo
+- Sistemas de riego automatizado
+
+Esto permite extender el sistema a nuevos entornos agrícolas sin modificar la lógica principal del software.
