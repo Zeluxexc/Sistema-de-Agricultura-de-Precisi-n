@@ -477,3 +477,107 @@ Cada entorno incluye:
 - Sistemas de riego automatizado
 
 Esto permite extender el sistema a nuevos entornos agrícolas sin modificar la lógica principal del software.
+
+## Semana 4
+
+# Builder Pattern
+
+# Producto (Sensor)
+
+```
+public class Sensor {
+
+    private String tipo;
+    private String ubicacion;
+    private int frecuencia;
+    private String unidad;
+    private boolean activo;
+
+    private Sensor(Builder builder){
+        this.tipo = builder.tipo;
+        this.ubicacion = builder.ubicacion;
+        this.frecuencia = builder.frecuencia;
+        this.unidad = builder.unidad;
+        this.activo = builder.activo;
+    }
+
+    public void mostrarConfiguracion(){
+        System.out.println("Sensor: " + tipo);
+        System.out.println("Ubicación: " + ubicacion);
+        System.out.println("Frecuencia: " + frecuencia);
+        System.out.println("Unidad: " + unidad);
+        System.out.println("Activo: " + activo);
+    }
+```
+
+# Builder (construcción paso a paso)
+
+```
+ public static class Builder {
+
+        private String tipo;
+        private String ubicacion;
+        private int frecuencia;
+        private String unidad;
+        private boolean activo;
+
+        public Builder tipo(String tipo){
+            this.tipo = tipo;
+            return this;
+        }
+
+        public Builder ubicacion(String ubicacion){
+            this.ubicacion = ubicacion;
+            return this;
+        }
+
+        public Builder frecuencia(int frecuencia){
+            this.frecuencia = frecuencia;
+            return this;
+        }
+
+        public Builder unidad(String unidad){
+            this.unidad = unidad;
+            return this;
+        }
+
+        public Builder activo(boolean activo){
+            this.activo = activo;
+            return this;
+        }
+
+        public Sensor build(){
+            return new Sensor(this);
+        }
+    }
+}
+```
+
+# Uso del Builder
+
+```
+Sensor sensor = new Sensor.Builder()
+        .tipo("Humedad")
+        .ubicacion("Cultivo Norte")
+        .frecuencia(10)
+        .unidad("%")
+        .activo(true)
+        .build();
+
+sensor.mostrarConfiguracion();
+```
+
+Se implementó el patrón Builder para construir objetos complejos del sistema IoT agrícola de forma flexible.
+
+Este patrón permite configurar sensores con múltiples parámetros como:
+
+- tipo de sensor
+- ubicación del cultivo
+- frecuencia de medición
+- unidad de medida
+- estado del sensor
+
+El uso de Builder mejora la legibilidad del código y evita el problema de constructores telescópicos, permitiendo crear configuraciones paso a paso.
+
+
+
