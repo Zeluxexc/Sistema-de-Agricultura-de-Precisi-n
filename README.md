@@ -592,6 +592,8 @@ El uso de Builder mejora la legibilidad del código y evita el problema de const
 
 # 1. Implementación del Patrón Adapter
 
+Porque usamos Adapter: Si cambiábamos la interfaz Sensor para que aceptara el formato de ese sensor específico, rompía la compatibilidad con todos los sensores que ya teníamos funcionando. Con el Adapter, protegimos el código base y así el sistema sigue esperando un String, el adaptador se encarga de la 'traducción' técnica. Así, si luego se decide por comprar otra marca de sensores, solo creo un adaptador nuevo y el resto del programa no se alteraria.
+
 Este código muestra cómo "traducimos" un sensor externo (SensorExternoPro) a nuestra interfaz estándar Sensor.
 
 ```
@@ -619,6 +621,8 @@ public class SensorAdapter implements Sensor {
 
 # 2. Implementación del Patrón Bridge
 
+Porque añadimos Bridge: Si luego añadíamos una marca más, tocaría crear otras 3. Con el Bridge, separamos la lógica de la misión de la implementación del fabricante. Ahora podemos crear misiones nuevas sin saber nada de hardware en cuanto a los DRONES, y añadir drones nuevos sin tocar la lógica de las misiones. Es mucho más mantenible a largo plazo porque las dos jerarquías crecen por separado.
+
 Aquí se observa cómo separamos el Control (Abstracción) de la Implementación física del dron.
 
 ```
@@ -645,6 +649,8 @@ public class DronDJI implements DronImplementacion {
 ```
 
 # 3. Implementación del Patrón Decorator
+
+La razon para Usar Decorator era el problema de los if, el cual es que el código se vuelve muy rígido y difícil de testear. Con el Decorator, aplicamos el principio de responsabilidad única: la clase LogDecorator solo sabe hacer logs y la PrioridadAlta solo sabe poner el prefijo. Lo mejor es que podemos combinarlos en tiempo de ejecución según la gravedad de la alerta. Por ejemplo, para una sequía crítica podemos envolver la notificación tres veces (Log + Prioridad + Reintento), pero para un aviso de rutina usamos la básica. Es mucho más limpio que llenar el código de condicionales
 
 Este ejemplo muestra cómo añadimos funcionalidades (como Logs o Prioridad) a una notificación básica de forma dinámica.
 
