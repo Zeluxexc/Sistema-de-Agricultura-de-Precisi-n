@@ -294,6 +294,10 @@ POST http://localhost:8080/sensores/25
 Si humedad < 30 → activa riego
 Si humedad > 30 → desactiva
 
+## DIAGRAMAS UML
+
+<img width="3012" height="1326" alt="diagrama_clases" src="https://github.com/user-attachments/assets/aba150c5-5f02-4f8a-8943-f5ded32ce1b4" />
+
 ## Semana 2
 
 # Factory Method
@@ -579,5 +583,112 @@ Este patrón permite configurar sensores con múltiples parámetros como:
 
 El uso de Builder mejora la legibilidad del código y evita el problema de constructores telescópicos, permitiendo crear configuraciones paso a paso.
 
+
+## Semana 7 y 8
+
+<img width="1791" height="838" alt="diagrama_clases_estructural" src="https://github.com/user-attachments/assets/1b3a2dd9-dc3b-470a-8a96-4a71fce3f0b8" />
+
+# Implementación de Código (Patrones Estructurales)
+
+# 1. Implementación del Patrón Adapter
+
+Este código muestra cómo "traducimos" un sensor externo (SensorExternoPro) a nuestra interfaz estándar Sensor.
+
+```
+// Interfaz estándar de nuestro sistema
+public interface Sensor {
+    String medir();
+}
+
+// Clase del adaptador que "envuelve" al sensor externo
+public class SensorAdapter implements Sensor {
+    private SensorExternoPro sensorExterno;
+
+    public SensorAdapter(SensorExternoPro sensorExterno) {
+        this.sensorExterno = sensorExterno;
+    }
+
+    @Override
+    public String medir() {
+        // Adaptamos el método 'obtenerLecturaHumedad()' (double) a 'medir()' (String)
+        double lectura = sensorExterno.obtenerLecturaHumedad();
+        return "Lectura adaptada de SensorPro: " + lectura + "% de humedad.";
+    }
+}
+```
+
+# 2. Implementación del Patrón Bridge
+
+Aquí se observa cómo separamos el Control (Abstracción) de la Implementación física del dron.
+
+```
+// Abstracción: Define la lógica de control (Manual/Autónomo)
+public abstract class DronControl {
+    protected DronImplementacion implementacion;
+
+    protected DronControl(DronImplementacion implementacion) {
+        this.implementacion = implementacion;
+    }
+
+    public abstract void realizarMision(double x, double y);
+}
+
+// Implementación: Define las acciones físicas según el fabricante (DJI/Parrot)
+public class DronDJI implements DronImplementacion {
+    @Override
+    public void encenderMotores() { System.out.println("DJI: Motores encendidos."); }
+    @Override
+    public void volarACoordenadas(double x, double y) { System.out.println("DJI: Volando a (" + x + ", " + y + ")."); }
+    @Override
+    public void aterrizar() { System.out.println("DJI: Aterrizaje seguro."); }
+}
+```
+
+# 3. Implementación del Patrón Decorator
+
+Este ejemplo muestra cómo añadimos funcionalidades (como Logs o Prioridad) a una notificación básica de forma dinámica.
+
+```
+// Decorador base que envuelve la notificación original
+public abstract class NotificacionDecorator implements Notificacion {
+    protected Notificacion notificacionDecorada;
+
+    protected NotificacionDecorator(Notificacion notificacion) {
+        this.notificacionDecorada = notificacion;
+    }
+
+    @Override
+    public String enviar(String mensaje) {
+        return notificacionDecorada.enviar(mensaje);
+    }
+}
+
+// Decorador concreto que añade un prefijo de prioridad
+public class PrioridadAltaDecorator extends NotificacionDecorator {
+    public PrioridadAltaDecorator(Notificacion notificacion) {
+        super(notificacion);
+    }
+
+    @Override
+    public String enviar(String mensaje) {
+        return "[PRIORIDAD ALTA] " + super.enviar(mensaje);
+    }
+}
+```
+
+
+Ejemplo de Uso Combinado (Main/Controller)
+
+Puedes añadir este pequeño bloque para mostrar cómo se instancian estos patrones en tu aplicación:
+
+```
+// Ejemplo de uso del Decorador Combinado
+Notificacion alerta = new LogDecorator(new PrioridadAltaDecorator(new NotificacionBasica()));
+alerta.enviar("¡Alerta de sequía detectada!");
+
+// Ejemplo de uso del Bridge
+DronControl miDron = new ControlManual(new DronDJI());
+miDron.realizarMision(10.5, 20.3);
+```
 
 
