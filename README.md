@@ -584,7 +584,7 @@ Este patrón permite configurar sensores con múltiples parámetros como:
 El uso de Builder mejora la legibilidad del código y evita el problema de constructores telescópicos, permitiendo crear configuraciones paso a paso.
 
 
-## Semana 7 y 8
+## Semana 7 y 9
 
 <img width="1791" height="838" alt="diagrama_clases_estructural" src="https://github.com/user-attachments/assets/1b3a2dd9-dc3b-470a-8a96-4a71fce3f0b8" />
 
@@ -696,5 +696,88 @@ alerta.enviar("¡Alerta de sequía detectada!");
 DronControl miDron = new ControlManual(new DronDJI());
 miDron.realizarMision(10.5, 20.3);
 ```
+## Semana 10
 
+<img width="1384" height="572" alt="diagrama_facade_composite" src="https://github.com/user-attachments/assets/148564c9-f98e-4e18-bf57-c9b917292119" />
 
+# 1. Implementación del Patrón Composite
+
+```
+// Interfaz Componente: Define las operaciones comunes
+public interface ComponenteCultivo {
+    void regar();
+    String monitorear();
+}
+
+// Hoja: Representa un lote individual
+public class LoteSimple implements ComponenteCultivo {
+    private String nombre;
+    private int humedadActual;
+
+    @Override
+    public void regar() {
+        this.humedadActual = Math.min(100, this.humedadActual + 15);
+        System.out.println("Regando lote: " + nombre);
+    }
+
+    @Override
+    public String monitorear() {
+        return "Lote: " + nombre + ", Humedad: " + humedadActual + "%";
+    }
+}
+
+// Compuesto: Representa un grupo de lotes (MacroLote)
+public class MacroLote implements ComponenteCultivo {
+    private List<ComponenteCultivo> componentes = new ArrayList<>();
+
+    public void agregar(ComponenteCultivo c) { componentes.add(c); }
+
+    @Override
+    public void regar() {
+        for (ComponenteCultivo c : componentes) c.regar();
+    }
+
+    @Override
+    public String monitorear() {
+        StringBuilder sb = new StringBuilder();
+        for (ComponenteCultivo c : componentes) sb.append(c.monitorear()).append("\n");
+        return sb.toString();
+    }
+}
+```
+
+# 2. Implementación del Patrón Facade
+
+```
+@Component
+public class SistemaAgriculturaFacade {
+    @Autowired
+    private SensorService sensorService;
+
+    public String iniciarMonitoreoDiario(int humedadInicial) {
+        // Orquestación de múltiples patrones y servicios
+        sensorService.procesarHumedad(humedadInicial); // Singleton + Service
+        
+        Sensor s = SensorFactory.crearSensor("HUMEDAD"); // Factory Method
+        
+        ReporteCultivo r = new ReporteCultivoBuilder() // Builder
+            .tipo("Diario").activo(true).build();
+            
+        Notificacion n = new LogDecorator(new NotificacionBasica()); // Decorator
+        
+        return "Monitoreo Completo: " + r.toString() + " - " + n.enviar("OK");
+    }
+}
+```
+
+Ejemplo de Uso en el Controlador
+
+Asi el cliente (el controlador) ahora solo necesita llamar a la Fachada:
+
+```
+@GetMapping("/monitoreo-completo/{humedad}")
+public String monitoreoCompleto(@PathVariable int humedad) {
+    // El controlador ya no necesita conocer 10 clases diferentes, solo la Fachada
+    return agriculturaFacade.iniciarMonitoreoDiario(humedad);
+}
+```
