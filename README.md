@@ -702,6 +702,16 @@ miDron.realizarMision(10.5, 20.3);
 
 # 1. Implementación del Patrón Composite
 
+El patrón Composite se usa para manejar la *jerarquía de cultivos*, es decir, para que el sistema pueda regar y monitorear tanto un lote pequeño como un grupo grande de lotes usando exactamente el mismo comando, sin importar cuántos haya adentro.
+
+La clave está en la interfaz ComponenteCultivo, que obliga a que tanto un lote individual como un grupo de lotes tengan los mismos métodos regar() y monitorear():
+
+Luego hay dos implementaciones:
+
+*LoteSimple* → es la "hoja" del árbol. Representa un lote real en el campo. Cuando se le dice regar(), sube su humedad y listo. Es el elemento más básico.
+
+*MacroLote* → es el "compuesto". Adentro puede tener varios LoteSimple o incluso otros MacroLote. Cuando se le dice regar(), él solo recorre todos sus componentes y los riega uno por uno:
+
 ```
 // Interfaz Componente: Define las operaciones comunes
 public interface ComponenteCultivo {
@@ -746,7 +756,13 @@ public class MacroLote implements ComponenteCultivo {
 }
 ```
 
+¿Para qué sirve en el proyecto? Para que el controlador o el servicio nunca tenga que preguntar "¿esto es un lote solo o son varios?". Simplemente llama a regar() y el patrón se encarga del resto. Si mañana la finca crece y tiene 500 lotes en 10 macrolotes, el código no cambia para nada.
+
 # 2. Implementación del Patrón Facade
+
+Este es quizás el patrón más visible del proyecto porque *une todos los demás patrones en un solo lugar*. La clase SistemaAgriculturaFacade actúa como una ventanilla única: el controlador ya no necesita conocer 10 clases distintas, solo habla con la fachada.
+
+Mire lo que hace el método iniciarMonitoreoDiario():
 
 ```
 @Component
@@ -774,6 +790,10 @@ Ejemplo de Uso en el Controlador
 
 Asi el cliente (el controlador) ahora solo necesita llamar a la Fachada:
 
+En una sola llamada están trabajando juntos el *Singleton, el **Factory Method, el **Builder* y el *Decorator*. Sin la fachada, el controlador tendría que conocer y coordinar todo eso manualmente, lo que sería un desastre de mantenimiento.
+
+Y el resultado en el controlador queda así de limpio:
+
 ```
 @GetMapping("/monitoreo-completo/{humedad}")
 public String monitoreoCompleto(@PathVariable int humedad) {
@@ -781,3 +801,5 @@ public String monitoreoCompleto(@PathVariable int humedad) {
     return agriculturaFacade.iniciarMonitoreoDiario(humedad);
 }
 ```
+
+¿Para qué sirve en el proyecto? Para reducir el acoplamiento entre la capa de presentación (el controlador) y la lógica interna. Si en el futuro se cambia cómo funciona el sensor o el reporte, solo se modifica la fachada, y el controlador no se entera de nada.
